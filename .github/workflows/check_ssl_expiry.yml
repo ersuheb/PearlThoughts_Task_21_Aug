@@ -1,0 +1,27 @@
+name: Check SSL Expiry
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  
+  workflow_dispatch:     
+
+jobs:
+  check-ssl-expiry:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run SSL check and notify
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: node check_ssl_expiry.js
